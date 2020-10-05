@@ -1,0 +1,3 @@
+[submodule "libetch"]
+	path = libetch
+	url = https://github.com/etchlang/libetch.git
