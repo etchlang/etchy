@@ -2,12 +2,22 @@
 #include <iostream>
 #include <string>
 
-int main(int, char *[]) {
+void repl(std::istream &s) {
+	std::cout << "> ";
+
 	std::string input;
-	while(std::getline(std::cin, input)) {
-		std::cout << "input = " << input << std::endl;
+	while(std::getline(s, input)) {
 		auto ast = etch::parse(input);
-		std::cout << "output = " << ast << std::endl;
+
+		std::cout << "output = ";
+		dump(std::cout, ast);
+		std::cout << std::endl;
+
+		std::cout << "> ";
 	}
+}
+
+int main(int, char *[]) {
+	repl(std::cin);
 	return 0;
 }
