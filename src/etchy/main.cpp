@@ -8,11 +8,7 @@ void repl(std::istream &s) {
 	std::string input;
 	while(std::getline(s, input)) {
 		auto ast = etch::parse(input);
-
-		std::cout << "output = ";
-		dump(std::cout, ast);
-		std::cout << std::endl;
-
+		dump(std::cout, ast) << std::endl;
 		std::cout << "> ";
 	}
 }
