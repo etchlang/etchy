@@ -13,7 +13,8 @@ set(ETCHY_SRCS
 # etchy
 add_executable(etchy ${ETCHY_SRCS})
 target_include_directories(etchy PRIVATE include libetch/include ${ETCH_INCLUDE_DIRS})
-target_link_libraries(etchy $<TARGET_FILE:etch>)
+target_link_directories(etchy PRIVATE ${ETCH_LIBRARY_DIRS})
+target_link_libraries(etchy $<TARGET_FILE:etch> ${ETCH_LIBS})
 set_property(TARGET etchy PROPERTY CXX_STANDARD 17)
 set_property(TARGET etchy PROPERTY CXX_STANDARD_REQUIRED ON)
 add_dependencies(etchy etch)
