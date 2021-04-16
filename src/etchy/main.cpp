@@ -1,5 +1,6 @@
 #include <boost/program_options.hpp>
 #include <etch/parser.hpp>
+#include <etch/syntax/dump.hpp>
 #include <fstream>
 #include <iostream>
 #include <string>
