@@ -45,6 +45,12 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
+	if(!vm.count("input-file")) {
+		std::cerr << argv[0] << ": No input files specified" << std::endl;
+		std::cout << desc << std::endl;
+		return 0;
+	}
+
 	auto inputs = vm["input-file"].as<std::vector<std::string>>();
 
 	for(auto &input : inputs) {
