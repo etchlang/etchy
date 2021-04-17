@@ -1,6 +1,6 @@
 #include <boost/program_options.hpp>
-#include <etch/parser.hpp>
-#include <etch/syntax/dump.hpp>
+#include <etch/analysis/dump.hpp>
+#include <etch/compiler.hpp>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -10,7 +10,7 @@ void repl(std::istream &s) {
 
 	std::string input;
 	while(std::getline(s, input)) {
-		auto ast = etch::parse(input);
+		auto ast = etch::compile(input);
 		dump(std::cout, ast) << std::endl;
 		std::cout << "> ";
 	}
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 
 		f.read(contents.data(), filelen);
 
-		auto ast = etch::parse(contents);
+		auto ast = etch::compile(contents);
 		dump(std::cout, ast) << std::endl;
 	}
 
