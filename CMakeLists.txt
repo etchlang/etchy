@@ -12,6 +12,7 @@ set(ETCHY_SRCS
 
 # etchy
 add_executable(etchy ${ETCHY_SRCS})
+target_compile_definitions(etchy PRIVATE ${ETCH_DEFINITIONS})
 target_include_directories(etchy PRIVATE include libetch/include ${ETCH_INCLUDE_DIRS})
 target_link_directories(etchy PRIVATE ${ETCH_LIBRARY_DIRS})
 target_link_libraries(etchy $<TARGET_FILE:etch> ${ETCH_LIBS})

@@ -1,5 +1,4 @@
 #include <boost/program_options.hpp>
-#include <etch/analysis/dump.hpp>
 #include <etch/compiler.hpp>
 #include <fstream>
 #include <iostream>
@@ -11,7 +10,7 @@ void repl(std::istream &s) {
 	std::string input;
 	while(std::getline(s, input)) {
 		auto ast = etch::compile(input);
-		dump(std::cout, ast) << std::endl;
+		ast.dump(std::cout) << std::endl;
 		std::cout << "> ";
 	}
 }
@@ -74,7 +73,7 @@ int main(int argc, char *argv[]) {
 		f.read(contents.data(), filelen);
 
 		auto ast = etch::compile(contents);
-		dump(std::cout, ast) << std::endl;
+		ast.dump(std::cout) << std::endl;
 	}
 
 	return 0;
