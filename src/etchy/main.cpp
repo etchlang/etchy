@@ -9,8 +9,8 @@ void repl(std::istream &s) {
 
 	std::string input;
 	while(std::getline(s, input)) {
-		auto ast = etch::compile(input);
-		ast.dump(std::cout) << std::endl;
+		auto r = etch::compile(input);
+		std::cout << r << std::endl;
 		std::cout << "> ";
 	}
 }
@@ -72,8 +72,8 @@ int main(int argc, char *argv[]) {
 
 		f.read(contents.data(), filelen);
 
-		auto ast = etch::compile(contents);
-		ast.dump(std::cout) << std::endl;
+		auto r = etch::compile(contents);
+		std::cout << r << std::endl;
 	}
 
 	return 0;
