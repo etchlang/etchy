@@ -5,11 +5,13 @@
 #include <string>
 
 void repl(std::istream &s) {
+	etch::compiler comp(true);
+
 	std::cout << "> ";
 
 	std::string input;
 	while(std::getline(s, input)) {
-		auto r = etch::compile(input);
+		auto r = comp.run(input);
 		std::cout << r << std::endl;
 		std::cout << "> ";
 	}
@@ -72,8 +74,16 @@ int main(int argc, char *argv[]) {
 
 		f.read(contents.data(), filelen);
 
-		auto r = etch::compile(contents);
-		std::cout << r << std::endl;
+		etch::compiler comp(input);
+		auto r = comp.run(contents);
+
+		std::ofstream of("a.out", std::ios::out | std::ios::binary | std::ios::trunc);
+		if(of.fail()) {
+			std::cerr << argv[0] << ": " << "a.out: failed to open output file" << std::endl;
+			return 1;
+		}
+
+		of << r;
 	}
 
 	return 0;
