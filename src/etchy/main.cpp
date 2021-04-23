@@ -1,5 +1,6 @@
 #include <boost/program_options.hpp>
 #include <etch/compiler.hpp>
+#include <etch/linker.hpp>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -53,6 +54,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	auto inputs = vm["input-file"].as<std::vector<std::string>>();
+	std::vector<std::string> outputs;
 
 	for(auto &input : inputs) {
 		if(vm["verbose"].as<bool>()) {
@@ -77,7 +79,13 @@ int main(int argc, char *argv[]) {
 		etch::compiler comp(input);
 		auto r = comp.run(contents);
 
-		std::ofstream of("a.out", std::ios::out | std::ios::binary | std::ios::trunc);
+		std::string_view sv(input);
+		auto pos_dot = sv.find_last_of('.');
+		auto basename = sv.substr(0, pos_dot);
+		auto output = std::string(basename) + ".o";
+		outputs.emplace_back(output);
+
+		std::ofstream of(output, std::ios::out | std::ios::binary | std::ios::trunc);
 		if(of.fail()) {
 			std::cerr << argv[0] << ": " << "a.out: failed to open output file" << std::endl;
 			return 1;
@@ -85,6 +93,12 @@ int main(int argc, char *argv[]) {
 
 		of << r;
 	}
+
+	etch::linker ld;
+	for(auto &output : outputs) {
+		ld.push_back(output);
+	}
+	ld.run();
 
 	return 0;
 }
