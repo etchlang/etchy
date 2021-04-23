@@ -6,7 +6,8 @@
 #include <string>
 
 void repl(std::istream &s) {
-	etch::compiler comp(true);
+	etch::compiler comp;
+	comp.tgt = etch::compiler::target::llvm_assembly;
 
 	std::cout << "> ";
 
