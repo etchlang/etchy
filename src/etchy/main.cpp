@@ -14,6 +14,7 @@ void repl(std::istream &s) {
 	std::string input;
 	while(std::getline(s, input)) {
 		auto r = comp.run(input);
+		std::cout << std::endl;
 		std::cout << r << std::endl;
 		std::cout << "> ";
 	}
