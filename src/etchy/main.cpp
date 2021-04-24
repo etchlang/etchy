@@ -5,8 +5,9 @@
 #include <iostream>
 #include <string>
 
-void repl(std::istream &s) {
+void repl(std::istream &s, bool debug) {
 	etch::compiler comp;
+	comp.debug = debug;
 	comp.tgt = etch::compiler::target::llvm_assembly;
 
 	std::cout << "> ";
@@ -29,6 +30,7 @@ int main(int argc, char *argv[]) {
 		("output-file,o", po::value<std::string>(),              "Set output file")
 		("help,h",                                               "Display help message")
 		("verbose,v",     po::bool_switch(),                     "Enable verbose output")
+		("debug",         po::bool_switch(),                     "Enable debug output")
 		("interactive,i", po::bool_switch(),                     "Run interactive session")
 	;
 
@@ -44,8 +46,13 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
+	bool debug = false;
+	if(vm["debug"].as<bool>()) {
+		debug = true;
+	}
+
 	if(vm["interactive"].as<bool>()) {
-		repl(std::cin);
+		repl(std::cin, debug);
 		return 0;
 	}
 
@@ -79,6 +86,7 @@ int main(int argc, char *argv[]) {
 		f.read(contents.data(), filelen);
 
 		etch::compiler comp(input);
+		comp.debug = debug;
 		auto r = comp.run(contents);
 
 		std::string_view sv(input);
