@@ -29,9 +29,10 @@ int main(int argc, char *argv[]) {
 		("input-file",    po::value<std::vector<std::string>>(), "Add input file")
 		("output-file,o", po::value<std::string>(),              "Set output file")
 		("help,h",                                               "Display help message")
-		("verbose,v",     po::bool_switch(),                     "Enable verbose output")
 		("debug",         po::bool_switch(),                     "Enable debug output")
 		("interactive,i", po::bool_switch(),                     "Run interactive session")
+		("llvm-asm",      po::bool_switch(),                     "Output LLVM assembly")
+		("verbose,v",     po::bool_switch(),                     "Enable verbose output")
 	;
 
 	po::positional_options_description p;
@@ -49,6 +50,11 @@ int main(int argc, char *argv[]) {
 	bool debug = false;
 	if(vm["debug"].as<bool>()) {
 		debug = true;
+	}
+
+	bool llvm_asm = false;
+	if(vm["llvm-asm"].as<bool>()) {
+		llvm_asm = true;
 	}
 
 	if(vm["interactive"].as<bool>()) {
@@ -87,28 +93,37 @@ int main(int argc, char *argv[]) {
 
 		etch::compiler comp(input);
 		comp.debug = debug;
+		if(llvm_asm) {
+			comp.tgt = etch::compiler::target::llvm_assembly;
+		}
 		auto r = comp.run(contents);
 
-		std::string_view sv(input);
-		auto pos_dot = sv.find_last_of('.');
-		auto basename = sv.substr(0, pos_dot);
-		auto output = std::string(basename) + ".o";
-		outputs.emplace_back(output);
+		if(llvm_asm) {
+			std::cout << r;
+		} else {
+			std::string_view sv(input);
+			auto pos_dot = sv.find_last_of('.');
+			auto basename = sv.substr(0, pos_dot);
+			auto output = std::string(basename) + ".o";
+			outputs.emplace_back(output);
 
-		std::ofstream of(output, std::ios::out | std::ios::binary | std::ios::trunc);
-		if(of.fail()) {
-			std::cerr << argv[0] << ": " << "a.out: failed to open output file" << std::endl;
-			return 1;
+			std::ofstream of(output, std::ios::out | std::ios::binary | std::ios::trunc);
+			if(of.fail()) {
+				std::cerr << argv[0] << ": " << "a.out: failed to open output file" << std::endl;
+				return 1;
+			}
+
+			of << r;
 		}
-
-		of << r;
 	}
 
-	etch::linker ld;
-	for(auto &output : outputs) {
-		ld.push_back(output);
+	if(!llvm_asm) {
+		etch::linker ld;
+		for(auto &output : outputs) {
+			ld.push_back(output);
+		}
+		ld.run();
 	}
-	ld.run();
 
 	return 0;
 }
